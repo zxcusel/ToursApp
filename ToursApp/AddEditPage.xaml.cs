@@ -27,11 +27,11 @@ namespace ToursApp
         {
             InitializeComponent();
 
-            if (selectedHotel != null) 
+            if (selectedHotel != null)
                 _currentHotel = selectedHotel;
 
             DataContext = _currentHotel;
-            ComboCountries.ItemsSource = ToursBaseeEntities.GetContext().Countries.ToList() ;
+            ComboCountries.ItemsSource = ToursBaseeEntities.GetContext().Countries.ToList();
         }
 
         private void BtnSave_Click(object sender, RoutedEventArgs e)
