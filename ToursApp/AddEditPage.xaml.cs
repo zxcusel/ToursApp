@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -57,54 +58,38 @@ namespace ToursApp
                 // синхронизируем код страны с выбранным объектом
                 _currentHotel.CountryCode = _currentHotel.Country?.Code;
 
+                if (_currentHotel.Country != null)
+                {
+                    var existingCountry = context.Countries.Find(_currentHotel.Country.Code);
+                    if (existingCountry != null)
+                    {
+                        _currentHotel.Country = existingCountry;
+                    }
+                }
+
                 // Для нового отеля
                 if (_currentHotel.id == 0)
                 {
-                    // Создаем новый отель без id, чтобы база данных сама сгенерировала его
-                    var newHotel = new Hotel
-                    {
-                        Name = _currentHotel.Name,
-                        CountOfStars = _currentHotel.CountOfStars,
-                        CountryCode = _currentHotel.CountryCode
-                    };
-
-                    // Привязываем существующую страну
-                    if (_currentHotel.Country != null)
-                    {
-                        var existingCountry = context.Countries.Find(_currentHotel.Country.Code);
-                        if (existingCountry != null)
-                        {
-                            newHotel.Country = existingCountry;
-                        }
-                    }
-                    context.Hotels.Add(newHotel);
+                    context.Hotels.Add(_currentHotel);
                 }
                 // Для существующего отеля
                 else
                 {
-                    // 1. Находим отель в базе
-                    var hotelInDb = context.Hotels
-                        .Include(h => h.Country) // Загружаем связанную страну
-                        .FirstOrDefault(h => h.id == _currentHotel.id);
-
-                    if (hotelInDb != null)
+                    // убираем возможный дубликат из локального кеша
+                    var trackedHotel = context.Hotels.Local.FirstOrDefault(h => h.id == _currentHotel.id);
+                    if (trackedHotel != null && !ReferenceEquals(trackedHotel, _currentHotel))
                     {
-                        // 2. Обновляем свойства отеля
-                        context.Entry(hotelInDb).CurrentValues.SetValues(_currentHotel);
-
-                        // 3. Обновляем привязку к стране
-                        if (_currentHotel.Country != null)
-                        {
-                            var existingCountry = context.Countries.Find(_currentHotel.Country.Code);
-                            if (existingCountry != null)
-                            {
-                                hotelInDb.Country = existingCountry;
-                            }
-                        }
-
-                        // 4. Помечаем как измененный
-                        context.Entry(hotelInDb).State = EntityState.Modified;
+                        context.Entry(trackedHotel).State = EntityState.Detached;
                     }
+
+                    var entry = context.Entry(_currentHotel);
+                    if (entry.State == EntityState.Detached)
+                    {
+                        context.Hotels.Attach(_currentHotel);
+                        entry = context.Entry(_currentHotel);
+                    }
+
+                    entry.State = EntityState.Modified;
                 }
 
                 context.SaveChanges();
