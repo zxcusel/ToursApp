@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -55,6 +54,9 @@ namespace ToursApp
             {
                 var context = ToursBaseeEntities.GetContext();
 
+                // синхронизируем код страны с выбранным объектом
+                _currentHotel.CountryCode = _currentHotel.Country?.Code;
+
                 // Для нового отеля
                 if (_currentHotel.id == 0)
                 {
@@ -88,9 +90,7 @@ namespace ToursApp
                     if (hotelInDb != null)
                     {
                         // 2. Обновляем свойства отеля
-                        hotelInDb.Name = _currentHotel.Name;
-                        hotelInDb.CountOfStars = _currentHotel.CountOfStars;
-                        hotelInDb.CountryCode = _currentHotel.CountryCode;
+                        context.Entry(hotelInDb).CurrentValues.SetValues(_currentHotel);
 
                         // 3. Обновляем привязку к стране
                         if (_currentHotel.Country != null)
