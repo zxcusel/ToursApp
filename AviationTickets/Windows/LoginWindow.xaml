@@ -1,0 +1,65 @@
+﻿<Window x:Class="AviationTickets.Windows.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Авторизация - Авиабилеты"
+        Height="510"
+        Width="450"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize">
+
+    <Grid Background="#F5F5F5">
+        <Border Background="White"
+                CornerRadius="10"
+                Margin="40"
+                Padding="30">
+
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="15"
+                                  ShadowDepth="2"
+                                  Opacity="0.3"/>
+            </Border.Effect>
+
+            <StackPanel>
+                <TextBlock Text="✈️ Авиабилеты"
+                           FontSize="28"
+                           FontWeight="Bold"
+                           HorizontalAlignment="Center"
+                           Foreground="#2196F3"
+                           Margin="0,0,0,10"/>
+
+                <TextBlock Text="Войдите в систему"
+                           FontSize="16"
+                           HorizontalAlignment="Center"
+                           Foreground="#757575"
+                           Margin="0,0,0,30"/>
+
+                <TextBlock Text="Логин" FontWeight="SemiBold"/>
+                <TextBox x:Name="UsernameTextBox"
+                         Height="35"
+                         Margin="0,5,0,15"/>
+
+                <TextBlock Text="Пароль" FontWeight="SemiBold"/>
+                <PasswordBox x:Name="PasswordBox"
+                             Height="35"
+                             Margin="0,5,0,10"/>
+
+                <TextBlock x:Name="ErrorTextBlock"
+                           Foreground="Red"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,15"
+                           TextWrapping="Wrap"
+                           Visibility="Collapsed"/>
+
+                <Button Content="Войти"
+                        Height="40"
+                        Margin="0,0,0,10"
+                        Click="LoginButton_Click"/>
+
+                <Button Content="Регистрация"
+                        Height="40"
+                        Background="#4CAF50"
+                        Click="RegisterButton_Click"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

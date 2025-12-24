@@ -1,0 +1,8 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="Debug" />
+    <BuildType Name="Release" />
+    <BuildType Name="x64" />
+  </Configurations>
+  <Project Path="AviationTickets/AviationTickets.csproj" Id="09e8a0b7-9ab5-421e-9cfe-7466d207b227" />
+</Solution>
